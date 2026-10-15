@@ -9,6 +9,9 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.assertj.MockMvcTester;
 import org.springframework.test.web.servlet.assertj.MvcTestResult;
+import com.adidev.githubsearch.domain.SortField;
+import java.util.Arrays;
+import java.util.Locale;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -19,6 +22,45 @@ class OpenApiDocumentationTest {
 
     @Autowired
     MockMvcTester mvc;
+
+    private MvcTestResult apiDocs() {
+        return mvc.get().uri("/v3/api-docs").exchange();
+    }
+
+    @Test
+    void searchRequestSortIsDocumentedAsTheSortFieldValues() {
+        var expected = Arrays.stream(SortField.values())
+                .map(f -> f.name().toLowerCase(Locale.ROOT))
+                .toList();
+
+        assertThat(apiDocs()).bodyJson()
+                .extractingPath("$.components.schemas.SearchRequest.properties.sort.enum")
+                .asArray().containsExactlyElementsOf(expected);
+    }
+
+    @Test
+    void searchRequestHasUsableExamples() {
+        assertThat(apiDocs()).bodyJson()
+                .extractingPath("$.components.schemas.SearchRequest.properties.query.example")
+                .isEqualTo("spring boot");
+    }
+
+    @Test
+    void repositoryResponseDocumentsGitHubIdAndAlwaysPresentFields() {
+        var result = apiDocs();
+
+        assertThat(result).bodyJson()
+                .extractingPath("$.components.schemas.RepositoryResponse.properties.id.description")
+                .asString().containsIgnoringCase("GitHub");
+        assertThat(result).bodyJson()
+                .extractingPath("$.components.schemas.RepositoryResponse.required")
+                .asArray().containsExactlyInAnyOrder(
+                        "id", "name", "description", "owner",
+                        "language", "stars", "forks", "lastUpdated");
+        assertThat(result).bodyJson()
+                .extractingPath("$.components.schemas.RepositoryResponse.properties.lastUpdated.format")
+                .isEqualTo("date-time");
+    }
 
     @Test
     void publishesOpenApiSpecWithMetadataAndBothEndpoints() {
