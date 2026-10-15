@@ -18,6 +18,7 @@ spring:
 
 server:
   port: ${PORT:8080}
+  forward-headers-strategy: framework
 
 github:
   api-base-url: https://api.github.com
@@ -28,9 +29,19 @@ github:
 springdoc:
   paths-to-match: /api/**
   default-produces-media-type: application/json
+  pre-loading-enabled: true
   swagger-ui:
     operations-sorter: method
     tags-sorter: alpha
     try-it-out-enabled: true
     display-request-duration: true
     override-with-generic-response: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: never

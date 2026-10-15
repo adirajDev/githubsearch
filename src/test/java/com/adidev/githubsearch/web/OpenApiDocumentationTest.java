@@ -133,4 +133,16 @@ class OpenApiDocumentationTest {
                 .extractingPath("$.paths['/api/github/repositories'].get.operationId")
                 .isEqualTo("listStoredRepositories");
     }
+
+    @Test
+    void serverUrlHonoursForwardedHeadersFromTheProxy() {
+        var result = mvc.get().uri("/v3/api-docs")
+                .header("X-Forwarded-Proto", "https")
+                .header("X-Forwarded-Host", "githubsearch.onrender.com")
+                .exchange();
+
+        assertThat(result).bodyJson()
+                .extractingPath("$.servers[0].url")
+                .isEqualTo("https://githubsearch.onrender.com");
+    }
 }
