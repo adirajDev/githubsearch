@@ -29,6 +29,7 @@ github:
 springdoc:
   paths-to-match: /api/**
   default-produces-media-type: application/json
+  pre-loading-enabled: true
   swagger-ui:
     operations-sorter: method
     tags-sorter: alpha
