@@ -10,7 +10,8 @@ class SearchCriteriaTest {
     @Test
     void rejectsBlankQuery() {
         assertThatThrownBy(() -> new SearchCriteria("  ", "Java", SortField.STARS))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOfSatisfying(InvalidParameterException.class,
+                        e -> assertThat(e.getParameter()).isEqualTo("query"));
     }
 
     @Test

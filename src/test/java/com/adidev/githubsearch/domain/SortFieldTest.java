@@ -25,7 +25,9 @@ class SortFieldTest {
     @Test
     void rejectsUnknownValueWithHelpfulMessage() {
         assertThatThrownBy(() -> SortField.fromValue("popularity"))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("stars, forks, updated");
+                .isInstanceOfSatisfying(InvalidParameterException.class, e -> {
+                    assertThat(e.getParameter()).isEqualTo("sort");
+                    assertThat(e.getMessage()).contains("stars, forks, updated");
+                });
     }
 }
