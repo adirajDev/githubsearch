@@ -1,5 +1,8 @@
 package com.adidev.githubsearch.domain;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum SortField {
     STARS("stars"), FORKS("forks"), UPDATED("updated");
 
@@ -9,8 +12,10 @@ public enum SortField {
 
     SortField(String value) { this.value = value; }
 
+    @JsonValue
     public String value() { return value; }
 
+    @JsonCreator
     public static SortField fromValue(String raw) {
         if (raw == null || raw.isBlank()) {
             return STARS;

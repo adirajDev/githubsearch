@@ -33,3 +33,4 @@ springdoc:
     tags-sorter: alpha
     try-it-out-enabled: true
     display-request-duration: true
+    override-with-generic-response: false

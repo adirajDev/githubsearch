@@ -80,4 +80,57 @@ class OpenApiDocumentationTest {
     void servesSwaggerUi() {
         assertThat(mvc.get().uri("/swagger-ui/index.html")).hasStatusOk();
     }
+
+    @Test
+    void searchDocumentsOnlyTheResponsesItCanReturn() {
+        assertThat(apiDocs()).bodyJson()
+                .extractingPath("$.paths['/api/github/search'].post.responses")
+                .asMap().containsOnlyKeys("200", "400", "429", "500", "502", "503", "504");
+    }
+
+    @Test
+    void storedRepositoriesDocumentsNoGitHubErrors() {
+        assertThat(apiDocs()).bodyJson()
+                .extractingPath("$.paths['/api/github/repositories'].get.responses")
+                .asMap().containsOnlyKeys("200", "400", "500", "503");
+    }
+
+    @Test
+    void errorsAreDocumentedAsProblemJsonWithHeadersWhereRelevant() {
+        var result = apiDocs();
+
+        assertThat(result).bodyJson()
+                .extractingPath("$.paths['/api/github/search'].post.responses['400'].content['application/problem+json']")
+                .isNotNull();
+        assertThat(result).bodyJson()
+                .extractingPath("$.paths['/api/github/search'].post.responses['429'].headers['Retry-After']")
+                .isNotNull();
+        assertThat(result).bodyJson()
+                .extractingPath("$.paths['/api/github/repositories'].get.responses['200'].headers['X-Total-Count']")
+                .isNotNull();
+    }
+
+    @Test
+    void storedRepositoriesDocumentsAllQueryParameters() {
+        var result = apiDocs();
+
+        assertThat(result).bodyJson()
+                .extractingPath("$.paths['/api/github/repositories'].get.parameters[*].name")
+                .asArray().containsExactlyInAnyOrder("language", "minStars", "sort", "page", "size");
+        assertThat(result).bodyJson()
+                .extractingPath("$.paths['/api/github/repositories'].get.parameters[?(@.name=='sort')].schema.enum[*]")
+                .asArray().containsExactlyInAnyOrder("stars", "forks", "updated");
+    }
+
+    @Test
+    void operationsHaveStableIds() {
+        var result = apiDocs();
+
+        assertThat(result).bodyJson()
+                .extractingPath("$.paths['/api/github/search'].post.operationId")
+                .isEqualTo("searchRepositories");
+        assertThat(result).bodyJson()
+                .extractingPath("$.paths['/api/github/repositories'].get.operationId")
+                .isEqualTo("listStoredRepositories");
+    }
 }

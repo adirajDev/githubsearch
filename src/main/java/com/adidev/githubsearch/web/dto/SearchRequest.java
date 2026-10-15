@@ -22,9 +22,11 @@ public record SearchRequest(
 
         @Schema(description = "Sort order, always descending.",
                 allowableValues = {"stars", "forks", "updated"},
-                example = "stars")
+                example = "stars", defaultValue = "stars")
         @Pattern(regexp = SortField.PATTERN, message = SortField.ALLOWED_MESSAGE)
-        String sort) {    public SearchCriteria toCriteria() {
+        String sort) {
+
+    public SearchCriteria toCriteria() {
 
         return new SearchCriteria(query, language, SortField.fromValue(sort));
     }
