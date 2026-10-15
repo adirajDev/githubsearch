@@ -34,3 +34,12 @@ springdoc:
     try-it-out-enabled: true
     display-request-duration: true
     override-with-generic-response: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: never
