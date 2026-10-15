@@ -7,7 +7,7 @@ import org.springframework.data.repository.Repository;
 import java.util.Optional;
 
 public interface GitHubRepoRepository
-        extends Repository<GitHubRepo, Long>, JpaSpecificationExecutor<GitHubRepo> {
+        extends Repository<GitHubRepo, Long>, JpaSpecificationExecutor<GitHubRepo>, GitHubRepoUpsert {
 
     Optional<GitHubRepo> findByGithubId(Long githubId);
 
