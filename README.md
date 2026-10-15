@@ -2,6 +2,13 @@
 
 A Spring Boot REST API that searches GitHub repositories, stores the returned results in PostgreSQL, and lets clients filter and page through repositories stored by previous searches.
 
+## Live demo
+
+- Application: [https://github-repo-searcher-lzzh.onrender.com/](https://github-repo-searcher-lzzh.onrender.com/)
+- Swagger UI: [https://github-repo-searcher-lzzh.onrender.com/swagger-ui/index.html](https://github-repo-searcher-lzzh.onrender.com/swagger-ui/index.html)
+
+The free tier sleeps after 15 minutes of inactivity, so the first request may take about a minute while the service starts.
+
 ## Features
 
 - Search GitHub by repository name, with an optional language filter.
@@ -124,6 +131,8 @@ The stored-repositories endpoint only queries the local database; it does not ca
 
 When the application is running, open [Swagger UI](http://localhost:8080/swagger-ui/index.html). The OpenAPI JSON document is available at [http://localhost:8080/v3/api-docs](http://localhost:8080/v3/api-docs).
 
+To import the API into Postman, choose **Import** → **Link** and paste `https://github-repo-searcher-lzzh.onrender.com/v3/api-docs`. Postman generates a collection from the OpenAPI specification.
+
 ## Tests
 
 Run the full test suite with:
@@ -132,7 +141,7 @@ Run the full test suite with:
 ./mvnw test
 ```
 
-Integration tests use Testcontainers and PostgreSQL 18, so Docker must be available to the test process. The suite covers domain validation, GitHub API request/response handling, database migrations and upserts, service behavior, controller responses, and the generated OpenAPI contract.
+The suite currently contains 94 tests, including integration tests against PostgreSQL 18 via Testcontainers. Docker must be available to the test process. Coverage includes domain validation, GitHub API request/response handling, database migrations and upserts, service behavior, controller responses, and the generated OpenAPI contract.
 
 ## Project layout
 
