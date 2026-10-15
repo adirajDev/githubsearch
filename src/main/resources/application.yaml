@@ -22,3 +22,5 @@ server:
 github:
   api-base-url: https://api.github.com
   token: ${GITHUB_TOKEN:}
+  connect-timeout: 3s
+  read-timeout: 10s
