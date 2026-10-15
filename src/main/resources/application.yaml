@@ -24,3 +24,12 @@ github:
   token: ${GITHUB_TOKEN:}
   connect-timeout: 3s
   read-timeout: 10s
+
+springdoc:
+  paths-to-match: /api/**
+  default-produces-media-type: application/json
+  swagger-ui:
+    operations-sorter: method
+    tags-sorter: alpha
+    try-it-out-enabled: true
+    display-request-duration: true
